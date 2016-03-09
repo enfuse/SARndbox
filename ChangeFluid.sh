@@ -29,14 +29,18 @@ case $1 in
 		SOURCE_SHADER=$DIR"/share/SARndbox-1.6/Shaders/Fluids/SurfaceAddWaterColor-Oil.fs"
 		echo "waterAttenuation 0.02" > $PIPE_PATH
 		;;
+	experimental | e)
+		SOURCE_SHADER=$DIR"/share/SARndbox-1.6/Shaders/Fluids/SurfaceAddWaterColor-Exp.fs"
+		echo "waterAttenuation 0.02" > $PIPE_PATH
+		;;
 	grayscale | g)
 		SOURCE_SHADER=$DIR"/share/SARndbox-1.6/Shaders/Fluids/SurfaceAddWaterColor-Grayscale.fs"
 		echo "waterAttenuation 0.05" > $PIPE_PATH
 		;;
 	*)
 		echo "Fluid shader not found."
-		echo "Available fluids are: Water, Lava, Toxic Waste, Oil, Grayscale"
-		echo "Fluids may also be passed by first initial e.g. Water as w, Toxic Waste as tw"
+		echo "Available fluids are: Water, Lava, Toxic Waste, Oil, Grayscale and Experimental"
+		echo "Fluids may also be passed by first initial e.g. Water as w, Toxic Waste as tw, Experimental as e"
 		exit 1
 		;;
 esac
