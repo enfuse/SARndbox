@@ -116,7 +116,7 @@ float snoise(vec3 v)
 // Mix final noise value
   vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
   m = m * m;
-  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),
+  return 12.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),
                                 dot(p2,x2), dot(p3,x3) ) );
   }
 
@@ -165,12 +165,22 @@ void addWaterColor(in vec2 fragCoord,inout vec4 baseColor)
 	if(waterLevel>0.0)
 		{
 		/* Calculate the water color: */
-		float colorW=max(turb(vec3(fragCoord*0.04,waterAnimationTime*0.35)),0.5); // Turbulence noise
+		// float colorW=max(snoise(vec3(fragCoord*0.05,waterAnimationTime*0.25)),0.0); // Simple noise function
+		// float colorW=max(turb(vec3(fragCoord*0.05,waterAnimationTime*0.25)),0.0); // Turbulence noise
 
-		//vec4 waterColor=vec4(0.0,1.3-colorW*2.0,1.0-colorW,1.0); // Lava
-    vec4 waterColor=vec4(colorW*1.0,colorW*1.5,colorW*1.8,2.0); // Water
+		vec3 wn=normalize(vec3(texture2DRect(quantitySampler,vec2(waterLevelTexCoord.x-1.0,waterLevelTexCoord.y)).r-
+		                       texture2DRect(quantitySampler,vec2(waterLevelTexCoord.x+1.0,waterLevelTexCoord.y)).r,
+		                       texture2DRect(quantitySampler,vec2(waterLevelTexCoord.x,waterLevelTexCoord.y-1.0)).r-
+		                       texture2DRect(quantitySampler,vec2(waterLevelTexCoord.x,waterLevelTexCoord.y+1.0)).r,
+		                       0.25));
+		float colorW=pow(dot(wn,normalize(vec3(0.075,0.075,1.0))),600.0)*0.8-0.0;
+
+		vec4 waterColor=vec4(colorW*0.8,colorW+0.25,colorW+0.3,1.0); // Water
+		// vec4 waterColor=vec4(1.0-colorW,1.0-colorW*2.0,0.0,1.0); // Lava
+		// vec4 waterColor=vec4(0.0,0.0,1.0,1.0); // Blue
+
 		/* Mix the water color with the base surface color based on the water level: */
-		baseColor=mix(baseColor,waterColor,min(waterLevel*waterOpacity,1.0));
+		baseColor=mix(baseColor,waterColor,min(waterLevel*waterOpacity,waterLevel*0.8));
 		}
 	}
 
@@ -184,7 +194,7 @@ void addWaterColorAdvected(inout vec4 baseColor)
 	{
 	#if 0
 	/* Check if the surface is under water: */
-	vec3 waterLevelTex=texture2DRect(bathymetrySampler,waterLevelTexCoord).rgb;
+	vec3 waterLevelTex=texture2DRect(waterLevelSampler,waterLevelTexCoord).rgb;
 	if(waterLevelTex.b>=1.0/2048.0)
 		{
 		/* Calculate the water color: */

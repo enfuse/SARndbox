@@ -31,7 +31,7 @@ case $1 in
 		;;
 	experimental | e)
 		SOURCE_SHADER=$DIR"/share/SARndbox-1.6/Shaders/Fluids/SurfaceAddWaterColor-Exp.fs"
-		echo "waterAttenuation 0.02" > $PIPE_PATH
+		echo "waterAttenuation 0.1" > $PIPE_PATH
 		;;
 	grayscale | g)
 		SOURCE_SHADER=$DIR"/share/SARndbox-1.6/Shaders/Fluids/SurfaceAddWaterColor-Grayscale.fs"
